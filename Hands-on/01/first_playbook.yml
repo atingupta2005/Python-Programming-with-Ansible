@@ -1,0 +1,18 @@
+---
+- name: This is a hello-world example
+  hosts: all
+  tasks:
+    - name: Create a file called '/tmp/testfile.txt' with the content 'hello world'.
+      copy:
+        content: hello world
+        dest: /tmp/testfile.txt
+
+    - name: ensure nginx is at the latest version
+      apt: name=nginx state=latest
+      become: true
+
+    - name: start nginx
+      service:
+          name: nginx
+          state: started
+      become: true
