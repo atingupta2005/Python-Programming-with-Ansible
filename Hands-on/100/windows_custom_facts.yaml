@@ -1,0 +1,64 @@
+---
+- name: Collect and process custom facts on Windows
+  hosts: windows
+  gather_facts: yes
+  tasks:
+    - name: Collect disk usage information
+      win_command: powershell -Command "Get-PSDrive -PSProvider FileSystem | Select-Object Name, @{Name='Used(GB)';Expression={[math]::round($_.Used/1GB, 2)}}, @{Name='Used(%)';Expression={[math]::round($_.Used/$_.UsedMaximum*100, 2)}}"
+      register: disk_usage
+
+    - name: Collect memory usage information
+      win_command: powershell -Command "Get-CimInstance Win32_OperatingSystem | Select-Object FreePhysicalMemory, TotalVisibleMemorySize"
+      register: memory_usage
+
+    - name: Collect CPU usage information
+      win_command: powershell -Command "Get-CimInstance Win32_Processor | Select-Object LoadPercentage"
+      register: cpu_usage
+
+    - name: Set custom facts directly
+      set_fact:
+        custom_stats:
+          disk_usage: "{{ disk_usage.stdout_lines | join(' ') }}"
+          memory_usage: "{{ memory_usage.stdout_lines | join(' ') }}"
+          cpu_usage: "{{ cpu_usage.stdout_lines | join(' ') }}"
+
+    - name: Display custom facts
+      debug:
+        msg: |
+          Custom Disk Usage: {{ custom_stats.disk_usage }}
+          Custom Memory Usage: {{ custom_stats.memory_usage }}
+          Custom CPU Usage: {{ custom_stats.cpu_usage }}
+
+    - name: Execute Python script to process and set additional custom facts
+      win_shell: |
+        import json
+        import os
+        
+        # Collect the facts
+        facts = {
+          "disk_usage": "{{ custom_stats.disk_usage }}",
+          "memory_usage": "{{ custom_stats.memory_usage }}",
+          "cpu_usage": "{{ custom_stats.cpu_usage }}"
+        }
+        
+        # Process the facts
+        processed_facts = {
+          "processed_disk_usage": facts["disk_usage"],
+          "processed_memory_usage": facts["memory_usage"],
+          "processed_cpu_usage": facts["cpu_usage"]
+        }
+        
+        # Print to stdout for Ansible to capture
+        print(json.dumps(processed_facts))
+      register: python_output
+
+    - name: Set additional custom facts from Python output
+      set_fact:
+        additional_custom_stats: "{{ python_output.stdout | from_json }}"
+
+    - name: Display additional custom facts
+      debug:
+        msg: |
+          Processed Disk Usage: {{ additional_custom_stats.processed_disk_usage }}
+          Processed Memory Usage: {{ additional_custom_stats.processed_memory_usage }}
+          Processed CPU Usage: {{ additional_custom_stats.processed_cpu_usage }}

@@ -1,0 +1,47 @@
+---
+- name: Collect IP addresses, aggregate, and update hosts file
+  hosts: devices
+  gather_facts: no
+  tasks:
+    - name: Get the IP address of the device
+      command: hostname -I | awk '{print $1}'
+      register: ip_address
+
+    - name: Store the IP address in a file on each device
+      copy:
+        content: "{{ ip_address.stdout }}"
+        dest: "/tmp/ip_address_{{ inventory_hostname }}.txt"
+      delegate_to: localhost
+      run_once: true
+      tags: collect
+
+- name: Aggregate IP addresses and update hosts file
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Find all IP address files
+      find:
+        paths: /tmp
+        patterns: 'ip_address_*.txt'
+      register: ip_files
+
+    - name: Read IP addresses from files
+      slurp:
+        src: "{{ item.path }}"
+      with_items: "{{ ip_files.files }}"
+      register: ip_contents
+
+    - name: Aggregate IP addresses
+      set_fact:
+        all_ip_addresses: "{{ ip_contents.results | map(attribute='content') | map('b64decode') | list }}"
+
+    - name: Write IP addresses to the hosts file
+      copy:
+        content: |
+          [dynamic_ips]
+          {% for ip in all_ip_addresses %}
+          {{ ip }}
+          {% endfor %}
+        dest: /etc/ansible/hosts
+      become: yes
+      tags: update

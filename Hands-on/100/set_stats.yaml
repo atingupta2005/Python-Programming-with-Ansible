@@ -1,0 +1,77 @@
+---
+- name: Collect custom stats and generate a report
+  hosts: all
+  gather_facts: yes
+  vars:
+    report_script_path: "/tmp/generate_report.py"
+    report_output_path: "/tmp/report_output.txt"
+
+  tasks:
+    - name: Collect disk usage information
+      command: df -h
+      register: disk_usage
+
+    - name: Collect memory usage information
+      command: free -m
+      register: memory_usage
+
+    - name: Collect CPU usage information
+      command: top -bn1 | grep "Cpu(s)"
+      register: cpu_usage
+
+    - name: Set custom statistics
+      set_stats:
+        data:
+          disk_usage: "{{ disk_usage.stdout }}"
+          memory_usage: "{{ memory_usage.stdout }}"
+          cpu_usage: "{{ cpu_usage.stdout }}"
+
+    - name: Store collected data in a JSON file
+      copy:
+        content: |
+          {
+            "disk_usage": "{{ hostvars[inventory_hostname]['ansible_stats']['data']['disk_usage'] }}",
+            "memory_usage": "{{ hostvars[inventory_hostname]['ansible_stats']['data']['memory_usage'] }}",
+            "cpu_usage": "{{ hostvars[inventory_hostname]['ansible_stats']['data']['cpu_usage'] }}"
+          }
+        dest: /tmp/collected_data.json
+
+    - name: Copy the Python report generation script to the target machine
+      copy:
+        content: |
+          #!/usr/bin/env python3
+          import json
+          import sys
+
+          def main():
+              input_file = '/tmp/collected_data.json'
+              output_file = '/tmp/report_output.txt'
+
+              with open(input_file, 'r') as f:
+                  data = json.load(f)
+
+              with open(output_file, 'w') as f:
+                  f.write("Custom Report\n")
+                  f.write("=================\n")
+                  f.write("Disk Usage:\n")
+                  f.write(data.get('disk_usage', 'No data') + '\n\n')
+                  f.write("Memory Usage:\n")
+                  f.write(data.get('memory_usage', 'No data') + '\n\n')
+                  f.write("CPU Usage:\n")
+                  f.write(data.get('cpu_usage', 'No data') + '\n')
+
+          if __name__ == "__main__":
+              main()
+        dest: "{{ report_script_path }}"
+        mode: '0755'
+
+    - name: Execute the Python script to generate the report
+      command: "{{ report_script_path }}"
+
+    - name: Display the report output
+      command: cat "{{ report_output_path }}"
+      register: report_output
+
+    - name: Show the report output
+      debug:
+        msg: "{{ report_output.stdout }}"
