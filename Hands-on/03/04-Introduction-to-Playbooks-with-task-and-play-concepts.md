@@ -13,8 +13,8 @@
  - hosts: all
    become: yes
    tasks:
-   - yum: name=wget state=absent
-   - yum: name=vim state=present
+   - apt: name=wget state=absent
+   - apt: name=vim state=present
 ```
  - Sample playbook - install_nginx.yml
 ```
@@ -22,7 +22,7 @@
  - hosts: web
    become: yes
    tasks:
-   - yum: name=nginx state=present
+   - apt: name=nginx state=present
 ```
 - Run playbook
   - ansible-playbook install_wget.yml
@@ -34,12 +34,12 @@
  - hosts: all
    become: yes
    tasks:
-   - yum: name=wget state=present
-   - yum: name=vim state=absent
+   - apt: name=wget state=present
+   - apt: name=vim state=absent
  - hosts: web
    become: yes
    tasks:
-   - yum: name=nginx state=absent
+   - apt: name=nginx state=absent
 ```
 - Run playbook
   - ansible-playbook install_wget_nginx.yaml
