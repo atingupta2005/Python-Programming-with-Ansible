@@ -34,8 +34,6 @@ ansible <hostname> -m ansible.builtin.setup
 ```
 
  - Caching is controlled by the cache plugins
- - By default, Ansible uses the memory cache plugin, which stores facts in memory for the duration of the current playbook run
- - To retain Ansible facts for repeated use, select a different cache plugin
 
 ## Information about Ansible: magic variables
  - You can access information about Ansible operations, including the python version being used, the hosts and groups in inventory, and the directories for playbooks and roles, using “magic” variables.
@@ -47,11 +45,6 @@ ansible <hostname> -m ansible.builtin.setup
     - inventory_hostname
 
  - Other useful magic variables refer to the current play or playbook
-  - ansible_play_batch
-    - is a list of hostnames that are in scope for the current ‘batch’ of the play.
-  - ansible_playbook_python
-    - is the path to the python executable used to invoke the Ansible command line tool.
-
   - inventory_dir
     - is the pathname of the directory holding Ansible’s inventory host file.
   - inventory_file

@@ -1,5 +1,5 @@
 ---
- - name: Play for Arithmetic OPerators
+ - name: Play for Arithmetic Operators
    hosts: localhost
    gather_facts: false
    vars:

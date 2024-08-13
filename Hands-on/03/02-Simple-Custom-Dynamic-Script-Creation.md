@@ -7,10 +7,8 @@
  - Modify the script (If Required)
  - Make it executable
    - sudo chmod a+x simple-dynamic-inventory.py
- - Test the script:
-   - ./simple-dynamic-inventory.py
+ 
  - Use the script:
    - ansible -i simple-dynamic-inventory.py all --list-hosts
    - ansible -i simple-dynamic-inventory.py all -m ping
-   - ansible -i simple-dynamic-inventory.py app -m ping
    - ansible -i simple-dynamic-inventory.py db -m ping

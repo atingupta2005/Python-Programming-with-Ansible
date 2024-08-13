@@ -1,10 +1,11 @@
-#!/bin/python
+#!/usr/bin/python3
 import sys
 import json
 import pprint
 
 def get_hosts():
-   myhosts = ["10.0.0.10", "10.0.0.11"]
+   #myhosts = ["10.0.0.10", "10.0.0.11"]
+   myhosts = ["vm-ejcbfdagih-2.eastus2.cloudapp.azure.com", "vm-ifheabjdcg-1.centralus.cloudapp.azure.com"]
    hosts=[]
    
    for ip_address in myhosts:
