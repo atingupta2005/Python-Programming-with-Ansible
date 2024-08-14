@@ -1,0 +1,129 @@
+---
+- name: Comprehensive playbook with various tasks
+  hosts: localhost
+  gather_facts: yes  # Gather system facts to use in tasks
+  become: yes  # Elevate privileges to perform administrative tasks
+  vars:
+    # Variables used for configuration
+    config_file_path: "{{ ansible_env.HOME }}/config.conf"
+    config_settings:
+      - { key: "setting1", value: "value1" }
+      - { key: "setting2", value: "value2" }
+
+  tasks:
+    - name: Update the package cache on Debian-based systems
+      apt:
+        update_cache: yes
+      when: ansible_facts['os_family'] == "Debian"
+      tags:
+        - update
+        - common
+
+    - name: Install necessary packages
+      package:
+        name:
+          - git
+          - curl
+        state: present
+      tags:
+        - packages
+        - common
+
+    - name: Create a directory for application logs
+      file:
+        path: /var/log/my_app
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      tags:
+        - setup
+        - logs
+
+    - name: Ensure a specific service is running
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      when: ansible_facts['os_family'] == "Debian"
+      tags:
+        - service
+        - apache
+
+    - name: Write configuration settings to the config file
+      lineinfile:
+        path: "{{ config_file_path }}"
+        regexp: '^{{ item.key }}='
+        line: "{{ item.key }}={{ item.value }}"
+        create: yes
+      loop: "{{ config_settings }}"
+      tags:
+        - config
+        - common
+
+    - name: Check disk space usage
+      command: df -h
+      register: disk_space
+      tags:
+        - check
+        - common
+
+    - name: Print disk space usage
+      debug:
+        msg: "Disk space usage: {{ disk_space.stdout }}"
+      tags:
+        - check
+        - common
+
+    - name: Backup configuration file
+      copy:
+        src: "{{ config_file_path }}"
+        dest: "{{ config_file_path }}.bak"
+        remote_src: yes
+      tags:
+        - backup
+        - config
+
+    - name: Cleanup old log files
+      file:
+        path: "{{ ansible_env.HOME }}/old_logs"
+        state: absent
+      tags:
+        - cleanup
+        - logs
+
+    - name: Debug task to illustrate usage
+      debug:
+        msg: "This is a placeholder task to demonstrate a use case"
+      tags:
+        - placeholder
+        - demo
+
+  handlers:
+    - name: restart apache2
+      service:
+        name: apache2
+        state: restarted
+      when: ansible_facts['os_family'] == "Debian"
+
+  # Example commands to run this playbook with various tags and conditions
+  # To run the entire playbook:
+  # ansible-playbook playbook.yml
+
+  # To run tasks tagged as 'update' and 'common':
+  # ansible-playbook playbook.yml --tags "update,common"
+
+  # To run tasks tagged as 'packages':
+  # ansible-playbook playbook.yml --tags "packages"
+
+  # To run tasks tagged as 'config':
+  # ansible-playbook playbook.yml --tags "config"
+
+  # To run tasks tagged as 'cleanup':
+  # ansible-playbook playbook.yml --tags "cleanup"
+
+  # To skip tasks tagged as 'debug' and 'placeholder':
+  # ansible-playbook playbook.yml --skip-tags "debug,placeholder"
+
+  # To run with specific OS family variable:
+  # ansible-playbook playbook.yml -e ansible_facts.os_family=Debian

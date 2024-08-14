@@ -1,20 +1,65 @@
 ---
-  - hosts: localhost
-    gather_facts: false
-    become: yes
-    tasks:
-      - yum:
-         name: gettext-devel
-         state: present
-      - yum:
-         name: openssl-devel
-         state: present
-      - yum:
-         name: perl-CPAN
-         state: present
-      - yum:
-         name: perl-devel
-         state: present
-      - yum:
-         name: zlib-devel
-         state: present
+- name: Detailed playbook to install development packages based on OS
+  hosts: localhost
+  gather_facts: yes  # Gather system facts to determine the OS type
+  become: yes  # Elevate privileges to perform administrative tasks
+  vars:
+    # Dictionary of packages for different OS families
+    packages:
+      RedHat:
+        - gettext-devel
+        - openssl-devel
+        - perl-CPAN
+        - perl-devel
+        - zlib-devel
+      Debian:
+        - gettext
+        - libssl-dev
+        - libperl-dev
+        - zlib1g-dev
+
+  tasks:
+    - name: Install packages on RedHat-based systems
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages['RedHat'] }}"
+      when: ansible_facts['os_family'] == "RedHat"
+      notify:
+        - verify RedHat packages
+
+    - name: Install packages on Debian-based systems
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages['Debian'] }}"
+      when: ansible_facts['os_family'] == "Debian"
+      notify:
+        - verify Debian packages
+
+  handlers:
+    - name: verify RedHat packages
+      command: rpm -q "{{ item }}"
+      with_items: "{{ packages['RedHat'] }}"
+      register: redhat_package_status
+      failed_when: "'package is not installed' in redhat_package_status.stderr"
+      changed_when: false
+
+    - name: verify Debian packages
+      command: dpkg -l | grep "{{ item }}"
+      with_items: "{{ packages['Debian'] }}"
+      register: debian_package_status
+      failed_when: "'package not installed' in debian_package_status.stderr"
+      changed_when: false
+
+  # Optional: Check and print package installation status
+    - name: Print RedHat package installation status
+      debug:
+        msg: "RedHat package {{ item.item }} status: {{ item.stdout }}"
+      with_items: "{{ redhat_package_status.results }}"
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Print Debian package installation status
+      debug:
+        msg: "Debian package {{ item.item }} status: {{ item.stdout }}"
+      with

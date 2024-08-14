@@ -1,0 +1,76 @@
+---
+- name: Play 1: Using `local_action` to Perform Local Operations
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Get system uptime on the local machine
+      local_action: shell 'uptime'
+      register: local_up_time
+      # This task runs the uptime command on the local machine where the playbook is executed
+
+    - name: Display local system uptime
+      debug:
+        msg: "Local system uptime: {{ local_up_time.stdout }}"
+      # Shows the result of the uptime command executed on the local machine
+
+    - name: Create a directory in the local user's home directory
+      local_action:
+        module: file
+        path: "{{ ansible_env.HOME }}/local_backups"
+        state: directory
+        mode: '0755'
+      # Creates a directory on the local machine to store backups
+
+    - name: List contents of the local backup directory
+      local_action: command 'ls -l {{ ansible_env.HOME }}/local_backups'
+      register: local_backup_contents
+      # Lists contents of the directory created on the local machine
+
+    - name: Display local backup directory contents
+      debug:
+        msg: "Local backup directory contents: {{ local_backup_contents.stdout }}"
+      # Shows the contents of the local backup directory
+
+- name: Play 2: Using `delegate_to` to Perform Actions on a Different Host
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Get disk space usage from localhost
+      command: df -h
+      register: disk_space
+      delegate_to: localhost
+      # This task runs the df command on the local machine (localhost) even though it's targeted at all hosts
+
+    - name: Show disk space usage from localhost
+      debug:
+        msg: "Disk space usage from localhost: {{ disk_space.stdout }}"
+      # Displays the result of the df command executed on localhost
+
+    - name: Ensure Apache is installed on the remote host
+      package:
+        name: apache2
+        state: present
+      # Installs Apache on the remote hosts (assuming they are Debian-based)
+
+    - name: Ensure Apache service is started on the remote host
+      service:
+        name: apache2
+        state: started
+      # Starts the Apache service on the remote hosts
+
+    - name: Check Apache status on localhost
+      service:
+        name: apache2
+        state: status
+      delegate_to: localhost
+      # Checks the status of the Apache service on the local machine (localhost)
+
+# ansible-playbook local_vs_delegate.yml
+
+# ansible-playbook local_vs_delegate.yml -l myserver
+
+# ansible-playbook local_vs_delegate.yml -v
+
+# ansible-playbook local_vs_delegate.yml --tags "local_action"
+
+# ansible-playbook local_vs_delegate.yml --skip-tags "skip_tag"

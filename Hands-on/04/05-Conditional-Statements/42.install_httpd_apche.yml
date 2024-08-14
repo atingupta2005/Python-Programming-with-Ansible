@@ -8,9 +8,9 @@
         yum:
           name: httpd
           state: present
-        when: ansible_distribution != "Ubuntu"
+        when: ansible_distribution | lower  != "ubuntu"
       - name: Istalling apache2 using apt
         apt:
           name: apache2
           state: present
-        when: ansible_distribution == "Ubuntu"
+        when: ansible_distribution | lower  == "ubuntu"
