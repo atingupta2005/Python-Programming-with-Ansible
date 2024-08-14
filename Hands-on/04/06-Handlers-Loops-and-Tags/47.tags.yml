@@ -1,6 +1,6 @@
 ---
 - name: Comprehensive playbook with various tasks
-  hosts: localhost
+  hosts: all
   gather_facts: yes  # Gather system facts to use in tasks
   become: yes  # Elevate privileges to perform administrative tasks
   vars:
@@ -59,7 +59,7 @@
       loop: "{{ config_settings }}"
       tags:
         - config
-        - common
+        - always
 
     - name: Check disk space usage
       command: df -h
@@ -97,7 +97,7 @@
         msg: "This is a placeholder task to demonstrate a use case"
       tags:
         - placeholder
-        - demo
+        - never
 
   handlers:
     - name: restart apache2
