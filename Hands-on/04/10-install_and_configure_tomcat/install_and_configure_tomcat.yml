@@ -6,7 +6,7 @@
     req_java: java-1.8.0-openjdk
     set_java: jre-1.8.0-openjdk
     req_tomcat_ver: 9.0.41
-    tomcat_url: http://mirrors.estointernet.in/apache/tomcat/tomcat-{{ req_tomcat_ver.split('.')[0] }}/v{{ req_tomcat_ver }}/bin/apache-tomcat-{{ req_tomcat_ver }}.tar.gz
+    tomcat_url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.93/bin/apache-tomcat-9.0.93.tar.gz
     tomcat_port: 8090
   become: yes
   tasks:
