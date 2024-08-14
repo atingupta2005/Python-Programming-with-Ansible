@@ -1,0 +1,12 @@
+# multi_task_playbook.yml
+- name: Test SSH Multiplexing with Multiple Tasks
+  hosts: all
+  tasks:
+    - name: Check Disk Space
+      command: df -h
+
+    - name: Check Memory Usage
+      command: free -m
+
+    - name: Check Uptime
+      command: uptime
