@@ -1,13 +1,14 @@
 ---
-  - hosts: localhost
+  - hosts: all
     gather_facts: false
     tasks:
       - command: "ls /home"
         register: out
         #failed_when: out.rc==0
       - debug: var=out
-      - command: "ls /home"
-        register: out
+      - command: "ls /homee"
+        #ignore_errors: True    # Uncomment this to make the fail: block run
+        register: out2
       - fail:
-          msg: "Failed because rc is 0"
-        when: out.rc==0
+          msg: "Failed because rc is 2"
+        when: out2.rc==2
