@@ -1,6 +1,6 @@
 ---
 - name: Collect IP addresses, aggregate, and update hosts file
-  hosts: devices
+  hosts: all
   gather_facts: no
   tasks:
     - name: Get the IP address of the device
@@ -11,12 +11,12 @@
       copy:
         content: "{{ ip_address.stdout }}"
         dest: "/tmp/ip_address_{{ inventory_hostname }}.txt"
-      delegate_to: localhost
+      delegate_to: vm-cfidehagbj-2.centralus.cloudapp.azure.com
       run_once: true
       tags: collect
 
 - name: Aggregate IP addresses and update hosts file
-  hosts: localhost
+  hosts: all
   gather_facts: no
   tasks:
     - name: Find all IP address files
