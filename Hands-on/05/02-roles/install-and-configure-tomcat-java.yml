@@ -4,6 +4,9 @@
    gather_facts: false
    become: yes
    roles:
-    - update_repos
-    - xyz_java
+    - role: update_repos
+    - role: xyz_java
+      vars:
+        req_java: java-11-openjdk
+        set_java: jre-1.8.0-openjdk
     - xyz_tomcat
