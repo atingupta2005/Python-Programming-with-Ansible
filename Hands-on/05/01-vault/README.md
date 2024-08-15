@@ -43,8 +43,7 @@ ansible-vault create nginx_secrets.yml
 - You will be prompted to enter a password for encrypting the file. Once inside the editor, add your API key:
 ```
 # nginx_secrets.yml
-vars:
-  api_key: "your_api_key_value"
+api_key: "your_api_key_value"
 ```
 
 
