@@ -43,7 +43,8 @@ ansible-vault create nginx_secrets.yml
 - You will be prompted to enter a password for encrypting the file. Once inside the editor, add your API key:
 ```
 # nginx_secrets.yml
-api_key: "your_secret_api_key_here"
+vars:
+  api_key: "your_api_key_value"
 ```
 
 
@@ -55,55 +56,31 @@ api_key: "your_secret_api_key_here"
 
 ```
 - name: Install and Configure Nginx with API Key
-  hosts: webservers
-  vars_files:
-    - nginx_secrets.yml
+  hosts: all
+  become: true
+  vars:
+    api_key: "your_api_key_value"
   tasks:
     - name: Ensure Nginx is installed
       apt:
         name: nginx
         state: present
+      when: ansible_facts['os_family'] == 'Debian'
 
     - name: Configure Nginx with API key
       template:
         src: nginx_config.j2
         dest: /etc/nginx/nginx.conf
-      vars:
-        api_key: "{{ api_key }}"
-
-    - name: Start Nginx service
-      service:
-        name: nginx
-        state: started
+      when: ansible_facts['os_family'] == 'Debian'
 ```
 
 ## Step 3: Create a Template
 - Create a Jinja2 template named nginx_config.j2 to be used by the template module. This file will be rendered with the sensitive data.
 ```
-# nginx_config.j2
-user www-data;
-worker_processes auto;
-pid /run/nginx.pid;
-
-events {
-    worker_connections 1024;
-}
-
-http {
-    include /etc/nginx/mime.types;
-    default_type application/octet-stream;
-
-    # Configure third-party service using the API key
-    set $api_key "{{ api_key }}";
-
-    server {
-        listen 80;
-        server_name localhost;
-
-        location / {
-            root /var/www/html;
-            index index.html index.htm;
-        }
+server {
+    listen 80;
+    location / {
+        proxy_set_header X-API-KEY "{{ api_key }}";
     }
 }
 ```
