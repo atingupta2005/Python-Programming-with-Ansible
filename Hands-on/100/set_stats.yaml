@@ -18,6 +18,7 @@
     - name: Collect CPU usage information
       command: top -bn1 | grep "Cpu(s)"
       register: cpu_usage
+      when: ansible_distribution | lower  != "ubuntu"
 
     - name: Set custom statistics
       set_stats:
