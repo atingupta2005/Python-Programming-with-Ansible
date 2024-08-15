@@ -119,7 +119,7 @@ library = ~/ansible/custom_modules
 ```
 ---
 - name: Test File Manager Module
-  hosts: localhost
+  hosts: all
   tasks:
     - name: Ensure file is present with specific content
       file_manager:

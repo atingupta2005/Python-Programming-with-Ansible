@@ -1,5 +1,5 @@
 - name: Fetch data from API using custom module
-  hosts: localhost
+  hosts: all
   tasks:
     - name: Fetch JSON data from example API
       api_fetcher:
