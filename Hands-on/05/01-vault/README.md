@@ -87,15 +87,10 @@ server {
 
 ## 3. Running the Playbook
 - To run the playbook and decrypt the nginx_secrets.yml file, provide the Vault password:
-### Option 1: Prompt for Password
+### Prompt for Password
 ```
-ansible-playbook setup_nginx.yml --ask-vault-pass
+ansible-playbook setup_nginx.yml --ask-vault-pass -u tuser -kK -vvv
 ```
-
-### Option 2: Use a Password File
-- Create a file named vault_password.txt and store your Vault password in it. Make sure this file is secure:
-ansible-playbook setup_nginx.yml --vault-password-file vault_password.txt
-
 
 ## 4. Updating Encrypted Data
 - If you need to update the API key, use:
