@@ -1,0 +1,14 @@
+---
+- name: Test Temperature
+  hosts: all
+  gather_facts: false
+  tasks:
+    
+    - name: Convert from farenHeit to Celcius
+      ansible_temp_module:
+        farenheit: 120
+      register: result
+
+    - name: Print Result
+      debug:
+        msg: "The converted temperature is {{ result.celcius }} Celcius"
