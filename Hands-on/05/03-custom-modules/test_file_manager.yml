@@ -1,0 +1,15 @@
+---
+- name: Test File Manager Module
+  hosts: localhost
+  tasks:
+    - name: Ensure file is present with specific content
+      file_manager:
+        path: /tmp/test_file.txt
+        state: present
+        content: "Hello, Ansible!"
+        mode: '0644'
+
+    - name: Ensure file is absent
+      file_manager:
+        path: /tmp/test_file_to_delete.txt
+        state: absent

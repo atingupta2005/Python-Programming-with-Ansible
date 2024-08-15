@@ -1,0 +1,17 @@
+- name: Print file content or copy and print
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Ensure file exists and print content
+      copy:
+        src: myfile.txt
+        dest: myfile.txt
+        force: no
+      register: copy_result
+      notify: print_file_content
+
+  handlers:
+    - name: print_file_content
+      debug:
+        msg: "{{ lookup('file', 'myfile.txt') }}"

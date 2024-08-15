@@ -7,6 +7,24 @@
  - sudo apt update
  - sudo apt install ansible
 
+# Install specific Python version
+## Install using virtualenv
+```
+sudo apt-get install python3.8
+pip install virtualenv
+virtualenv -p /usr/bin/python3.8 my_env
+source my_env/bin/activate
+deactivate
+```
+
+## Install using pyenv
+```
+pyenv install 3.9.0
+pyenv virtualenv 3.9.0 myenv
+pyenv activate myenv
+pyenv deactivate
+```
+
 # ssh-keygen
  - ssh-keygen -f ~/.ssh/demo_id_rsa
  - chmod 0600 ~/.ssh/demo_id_rsa

@@ -1,0 +1,28 @@
+- name: Fetch data from API using custom module
+  hosts: localhost
+  tasks:
+    - name: Fetch JSON data from example API
+      api_fetcher:
+        url: "https://jsonplaceholder.typicode.com/posts/1"
+        method: GET
+      register: result_get
+
+    - name: Show GET request result
+      debug:
+        msg: "GET Request Response: {{ result_get.response }}"
+
+    - name: Post data to example API
+      api_fetcher:
+        url: "https://jsonplaceholder.typicode.com/posts"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        data:
+          title: "foo"
+          body: "bar"
+          userId: 1
+      register: result_post
+
+    - name: Show POST request result
+      debug:
+        msg: "POST Request Response: {{ result_post.response }}"
