@@ -1,8 +1,10 @@
 - name: Install and Configure Nginx with API Key
   hosts: all
   become: true
-  vars:
-    api_key: "your_api_key_value"
+  vars_files:
+    - nginx_secrets.yml
+  #vars:
+  #  api_key: "your_api_key_value"
   tasks:
     - name: Ensure Nginx is installed
       apt:
