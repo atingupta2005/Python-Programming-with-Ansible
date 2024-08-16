@@ -1,0 +1,6 @@
+ansible_environment: "staging"
+flask_app_config_file: "/etc/systemd/system/flask_app_staging.service"
+nginx_config_file: "/etc/nginx/sites-available/flask_app_staging"
+flask_port: 5002  # Staging port
+server_name: "staging.example.com"
+workers: 2

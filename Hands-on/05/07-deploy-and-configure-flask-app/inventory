@@ -1,0 +1,8 @@
+[development]
+dev-server1 ansible_host=vm-cfidehagbj-2.centralus.cloudapp.azure.com
+
+[staging]
+staging-server1 ansible_host=vm-ifheabjdcg-1.centralus.cloudapp.azure.com
+
+[production]
+prod-server1 ansible_host=vm-ejcbfdagih-2.eastus2.cloudapp.azure.com
