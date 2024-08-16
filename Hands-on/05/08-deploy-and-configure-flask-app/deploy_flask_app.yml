@@ -20,7 +20,7 @@
       pip:
         name: virtualenv
         state: present
-        
+
     - name: Create Flask application directory
       file:
         path: "{{ flask_app_dir }}"
@@ -29,17 +29,32 @@
         group: "{{ flask_group }}"
         mode: '0755'
 
+    - name: List Directory contents before cloning repository
+      command: ls -al {{ flask_app_dir }}
+
+    - name: Delete Git Repo
+      command: sudo rm -rf {{ flask_app_dir }}
+
+    - name: List Directory contents after deleting old Git repo
+      command: ls -al {{ flask_app_dir }}
+
     - name: Clone Flask application repository
       git:
         repo: "{{ flask_app_repo }}"
         dest: "{{ flask_app_dir }}"
         version: main
 
-    - name: Create Python virtual environment
-      command: sudo rm -rf ~/myenv
+    - name: List Directory contents after cloning repository
+      command: ls -al {{ flask_app_dir }}
+
+    - name: Delete Python virtual environment
+      command: sudo rm -rf ~/myvenv
 
     - name: Create Python virtual environment
       command: python3 -m venv ~/myvenv
+
+    - name: List Directory contents after creating virtual environment
+      command: ls -al ~/myvenv
 
     - name: Install Flask and Gunicorn
       pip:
