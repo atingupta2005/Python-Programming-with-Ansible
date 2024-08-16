@@ -43,13 +43,12 @@
         requirements: "{{ flask_app_dir }}/requirements.txt"
         virtualenv: "~/myvenv"
 
-    - name: Start App
+      - name: Start App
       shell: |
         . ~/myvenv/bin/activate
-        python app.py --port {{ flask_port }}
+        nohup python app.py --port {{ flask_port }} > ~/flask_app/app.log 2>&1 &
       args:
         chdir: "{{ flask_app_dir }}"
-
 
 
     - name: Notify about successful deployment
