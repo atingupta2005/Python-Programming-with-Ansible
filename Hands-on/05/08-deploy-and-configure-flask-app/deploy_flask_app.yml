@@ -45,7 +45,7 @@
 
     - name: Start App
       shell: |
-        source ~/myvenv
+        source ~/myvenv/bin/activate
         python app.py --port {{ flask_port }}
       environment:
         FLASK_ENV: "{{ ansible_environment }}"
