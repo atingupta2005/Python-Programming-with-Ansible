@@ -46,6 +46,16 @@
     - name: Start App
       command: source ~/myvenv; python app.py --port {{ flask_port }}
 
+    - name: Start App
+      shell: |
+        source ~/myvenv
+        python app.py --port {{ flask_port }}
+      environment:
+        FLASK_ENV: {{ ansible_environment }}
+      args:
+        chdir: ~/myvenv
+
+
     - name: Notify about successful deployment
       debug:
         msg: "Flask application has been successfully deployed in the {{ ansible_environment }} environment on port {{ flask_port }}."
