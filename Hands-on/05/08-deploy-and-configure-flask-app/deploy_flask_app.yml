@@ -48,7 +48,7 @@
         . ~/myvenv/bin/activate
         python app.py --port {{ flask_port }}
       args:
-        chdir: {{ flask_app_dir }}
+        chdir: "{{ flask_app_dir }}"
 
 
 
