@@ -27,7 +27,7 @@
         state: directory
         owner: "{{ flask_user }}"
         group: "{{ flask_group }}"
-        mode: '0755'
+        mode: '0777'
 
     - name: Clone Flask application repository
       git:
@@ -37,6 +37,15 @@
 
     - name: Create Python virtual environment
       command: python3 -m venv ~/myvenv
+
+    - name: Set permissions for virtual environment
+      file:
+        path: ~/myvenv
+        state: directory
+        recurse: yes
+        owner: "{{ flask_user }}"
+        group: "{{ flask_group }}"
+        mode: '0777'
 
     - name: Install Flask
       pip:
