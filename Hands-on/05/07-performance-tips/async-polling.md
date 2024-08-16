@@ -1,26 +1,34 @@
 ### Long-Running Command with Async and Polling
 
 ```yaml
-- name: Run a long-running command asynchronously
-  hosts: localhost
+---
+- name: Example Playbook with long-running sleep task
+  hosts: all
+  become: yes
   tasks:
-    - name: Start a long-running process
-      command: /bin/sleep 300   # Simulates a long-running task (sleep for 5 minutes)
-      async: 600               # Allow up to 10 minutes for the task to complete
-      poll: 10                 # Check the status every 10 seconds
-      register: long_running_task
 
-    - name: Check the status of the long-running task
+    - name: Start long-running sleep task
+      command: sleep 60   # Simulating a long-running task with sleep for 60 seconds
+      async: 65           # Allow up to 65 seconds for the task to complete
+      poll: 0             # Do not wait for it to complete, continue with the next task
+      register: sleep_job
+
+    - name: Perform other tasks while sleep is running
+      command: echo "Executing other tasks while waiting..."
+      # Additional tasks that can be performed while the sleep command is running in the background
+
+    - name: Check the status of the sleep task
       async_status:
-        jid: "{{ long_running_task.ansible_job_id }}"
-      register: job_status
-      until: job_status.finished
-      retries: 60              # Retry every 10 seconds, up to 10 minutes
-      delay: 10                # Wait 10 seconds between retries
+        jid: "{{ sleep_job.ansible_job_id }}"
+      register: sleep_result
+      until: sleep_result.finished    # Continue until the sleep task is finished
+      retries: 5                      # Number of retries to check the status
+      delay: 15                       # Delay between retries (in seconds)
 
-    - name: Report the result of the long-running task
+    - name: Confirm completion of the long-running task
       debug:
-        msg: "The long-running task completed with status: {{ job_status.result.rc }}"
+        msg: "The long-running task has completed."
+      when: sleep_result.finished
 ```
 
 ### Explanation
