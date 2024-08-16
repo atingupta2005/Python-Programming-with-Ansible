@@ -60,36 +60,13 @@
     - name: List Directory contents after creating virtual environment
       command: ls -al ~/myvenv
 
-    - name: Install Flask and Gunicorn
+    - name: Install Flask
       pip:
         requirements: "{{ flask_app_dir }}/requirements.txt"
         virtualenv: "~/myvenv"
 
-    - name: Create Gunicorn systemd service file
-      template:
-        src: "templates/flask_app.service.j2"
-        dest: "{{ flask_app_config_file }}"
-        mode: '0644'
-
-    - name: Start and enable Gunicorn service
-      systemd:
-        name: flask_app
-        state: started
-        enabled: yes
-
-    - name: Create Nginx configuration file for Flask
-      template:
-        src: "templates/nginx_flask_app.conf.j2"
-        dest: "{{ nginx_config_file }}"
-        mode: '0644'
-
-    - name: Enable Nginx site configuration
-      command: "ln -s {{ nginx_config_file }} /etc/nginx/sites-enabled/flask_app"
-
-    - name: Restart Nginx to apply configuration
-      service:
-        name: nginx
-        state: restarted
+    - name: Start App
+      command: python app.py --port {{ flask_port }}
 
     - name: Notify about successful deployment
       debug:

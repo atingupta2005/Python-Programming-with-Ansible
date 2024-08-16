@@ -1,4 +1,2 @@
 ansible_environment: "development"
 flask_port: 5001  # Development port
-server_name: "dev.example.com"
-workers: 1

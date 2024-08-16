@@ -1,4 +1,2 @@
 ansible_environment: "production"
-flask_port: 80  # Production port
-server_name: "prod.example.com"
-workers: 3
+flask_port: 5080  # Production port

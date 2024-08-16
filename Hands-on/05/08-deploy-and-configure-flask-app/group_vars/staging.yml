@@ -1,4 +1,2 @@
 ansible_environment: "staging"
 flask_port: 5002  # Staging port
-server_name: "staging.example.com"
-workers: 2
