@@ -51,7 +51,7 @@
         source ~/myvenv
         python app.py --port {{ flask_port }}
       environment:
-        FLASK_ENV: {{ ansible_environment }}
+        FLASK_ENV: "{{ ansible_environment }}"
       args:
         chdir: ~/myvenv
 
