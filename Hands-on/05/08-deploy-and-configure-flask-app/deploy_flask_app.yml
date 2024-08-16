@@ -31,12 +31,15 @@
 
     - name: List Directory contents before cloning repository
       command: ls -al {{ flask_app_dir }}
+      ignore_errors: yes
 
     - name: Delete Git Repo
       command: sudo rm -rf {{ flask_app_dir }}
+      ignore_errors: yes
 
     - name: List Directory contents after deleting old Git repo
       command: ls -al {{ flask_app_dir }}
+      
 
     - name: Clone Flask application repository
       git:
@@ -46,6 +49,7 @@
 
     - name: List Directory contents after cloning repository
       command: ls -al {{ flask_app_dir }}
+            
 
     - name: Delete Python virtual environment
       command: sudo rm -rf ~/myvenv
