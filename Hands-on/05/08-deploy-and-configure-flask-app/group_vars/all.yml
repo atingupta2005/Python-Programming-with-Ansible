@@ -1,5 +1,5 @@
 flask_app_dir: "/opt/flask_app"
-flask_app_repo: "https://github.com/pyfrog/flask-vote-app"
+flask_app_repo: "https://github.com/atingupta2005/flask-todo-app"
 flask_app_config_file: "/etc/systemd/system/flask_app.service"
 nginx_config_file: "/etc/nginx/sites-available/flask_app"
 flask_user: "tuser"
