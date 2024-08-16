@@ -44,11 +44,11 @@
         virtualenv: "~/myvenv"
 
       - name: Start App
-      shell: |
-        . ~/myvenv/bin/activate
-        nohup python app.py --port {{ flask_port }} > ~/flask_app/app.log 2>&1 &
-      args:
-        chdir: "{{ flask_app_dir }}"
+        shell: |
+          . ~/myvenv/bin/activate
+          nohup python app.py --port {{ flask_port }} > ~/flask_app/app.log 2>&1 &
+        args:
+          chdir: "{{ flask_app_dir }}"
 
 
     - name: Notify about successful deployment
