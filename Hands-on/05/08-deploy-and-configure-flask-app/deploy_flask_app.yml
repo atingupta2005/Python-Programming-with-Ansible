@@ -16,6 +16,11 @@
           - git
         state: present
 
+    - name: Install virtualenv
+      pip:
+        name: virtualenv
+        state: present
+        
     - name: Create Flask application directory
       file:
         path: "{{ flask_app_dir }}"
