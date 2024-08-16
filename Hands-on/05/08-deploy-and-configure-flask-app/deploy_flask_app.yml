@@ -45,8 +45,11 @@
 
     - name: Start App
       shell: |
-        source ~/myvenv/bin/activate
+        . ~/myvenv/bin/activate
         python app.py --port {{ flask_port }}
+      args:
+        chdir: {{ flask_app_dir }}
+
 
 
     - name: Notify about successful deployment
