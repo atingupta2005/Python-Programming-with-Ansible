@@ -36,12 +36,12 @@
         version: master
 
     - name: Create Python virtual environment
-      command: python3 -m venv myvenv
+      command: python3 -m venv venv
 
     - name: Install Flask and Gunicorn
       pip:
         requirements: "{{ flask_app_dir }}/requirements.txt"
-        virtualenv: "{{ flask_app_dir }}/myvenv
+        virtualenv: "{{ flask_app_dir }}/venv"
 
     - name: Create Gunicorn systemd service file
       template:
