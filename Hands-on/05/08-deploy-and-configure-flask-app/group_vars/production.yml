@@ -1,6 +1,4 @@
 ansible_environment: "production"
-flask_app_config_file: "/etc/systemd/system/flask_app_prod.service"
-nginx_config_file: "/etc/nginx/sites-available/flask_app_prod"
 flask_port: 80  # Production port
 server_name: "prod.example.com"
 workers: 3

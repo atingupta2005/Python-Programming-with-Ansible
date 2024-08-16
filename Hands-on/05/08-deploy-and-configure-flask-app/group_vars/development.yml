@@ -1,6 +1,4 @@
 ansible_environment: "development"
-flask_app_config_file: "/etc/systemd/system/flask_app_dev.service"
-nginx_config_file: "/etc/nginx/sites-available/flask_app_dev"
 flask_port: 5001  # Development port
 server_name: "dev.example.com"
 workers: 1
