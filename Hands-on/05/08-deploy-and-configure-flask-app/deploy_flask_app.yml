@@ -33,7 +33,7 @@
       git:
         repo: "{{ flask_app_repo }}"
         dest: "{{ flask_app_dir }}"
-        version: master
+        version: main
 
     - name: Create Python virtual environment
       command: sudo rm -rf ~/myenv
